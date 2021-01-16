@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    接口式编程
+    namespace:命名空间,可以指定为接口的全类名
+    id:唯一标识,可以指定为接口中方法的名称
+    resultType:返回值类型
+    返回list时resultType指定的是list集合中的类型，返回单个map时resultType就是map(mybatis起别名)
+    返回一条map时，key是列名(username)，值就是对应的值(yyf123)
+    多个数据封装map时(Map<Integer,User>)，key是主键(id)，值是User数据
+    要修改key名，直接在接口的方法上注释@MapKey("xxx")即可，不加的话默认为主键id
+    #{id}从传递过来的参数中取出id值
+-->
+<mapper namespace="blog.mapper.AdminMapper">
+<!--  管理员登录  -->
+    <select id="adminLogin" resultType="blog.bean.Admin">
+        select * from admin where username=#{username} and password=#{password}
+    </select>
+</mapper>
