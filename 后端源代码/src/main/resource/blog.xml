@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blog.mapper.BlogMapper">
+<!--  添加博客  -->
+    <insert id="addBlog" useGeneratedKeys="true">
+        insert into blogs(title,body,identity1,time1,category,top)
+        values (#{title},#{body},'if',NOW(),'测试',0)
+    </insert>
+<!--  添加置顶博客  -->
+    <insert id="addTopBlog" useGeneratedKeys="true">
+        insert into blogs(title,body,identity1,time1,category,top)
+        values (#{title},#{body},'if',NOW(),'置顶',1)
+    </insert>
+<!--  添加留言  -->
+    <insert id="addMessage" useGeneratedKeys="true">
+        insert into message(identity1,body,email,time1,if_show)
+        values (#{identity1},#{body},#{email},NOW(),0)
+    </insert>
+<!--  添加评论  -->
+    <insert id="addComment" useGeneratedKeys="true">
+        insert into comments(identity1,email,body,time1,blog_id,if_show)
+        values (#{identity1},#{email},#{body},NOW(),#{blogId},0)
+    </insert>
+<!--  添加回复  -->
+    <insert id="addReply" useGeneratedKeys="true">
+        insert into reply(identity1,email,body,comment_id,time1)
+        values ('if','346313208@qq.com',#{body},#{commentId},NOW())
+    </insert>
+<!--  修改关于我的  -->
+    <update id="changeAbout">
+        update about set about=#{about} where id=1
+    </update>
+<!--  修改网站声明  -->
+    <update id="changeStatement">
+        update statement set statement=#{statement} where id=1
+    </update>
+<!--  激活留言  -->
+    <update id="acMessage">
+        update message set if_show=1 where id=#{id}
+    </update>
+<!-- 修改博客  -->
+    <update id="changeBlog">
+        update blogs set title=#{title},body=#{body},top=#{top} where blog_id=#{blogId}
+    </update>
+<!--  激活评论  -->
+    <update id="acComment">
+        update comments set if_show=1 where comment_id=#{commentId}
+    </update>
+<!--  修改自动保存的博客  -->
+    <update id="changeAutoBlog">
+        update auto set body=#{body} where id =1
+    </update>
+<!--  删除留言  -->
+    <delete id="deleteMessage">
+        delete from message where id=#{id}
+    </delete>
+<!--  删除博客  -->
+    <delete id="deleteBlog">
+        delete from blogs where blog_id=#{blogId}
+    </delete>
+<!--  删除评论  -->
+    <delete id="deleteComment">
+        delete from comments where comment_id=#{commentId}
+    </delete>
+<!--  删除回复  -->
+    <delete id="deleteReply">
+        delete from reply where reply_id=#{replyId}
+    </delete>
+<!--  倒序分页查询博客  -->
+    <select id="getBlogs" resultType="blog.bean.Blog">
+        select blog_id,title,left(body,30) as body,identity1,time1,category,top from blogs where top =0 ORDER BY blog_id DESC limit #{pageNum},5
+    </select>
+<!--  分页查询单个博客评论  -->
+    <select id="getComment" resultType="blog.bean.Comment">
+        select * from comments where blog_id=#{blogId} and if_show =1 limit #{pageNum},5
+    </select>
+<!--  查询评论的回复  -->
+    <select id="getReply" resultType="blog.bean.Reply">
+        select * from reply where comment_id=#{commentId}
+    </select>
+<!--  看博客  -->
+    <select id="readBlog" resultType="blog.bean.Blog">
+        select * from blogs where blog_id=#{blogId}
+    </select>
+<!--  分页查询所有评论  -->
+    <select id="getAllComments" resultType="blog.bean.Comment">
+        select * from comments where if_show=1 limit #{pageNum},5
+    </select>
+<!--  分页查询所有未激活评论  -->
+    <select id="getComments" resultType="blog.bean.Comment">
+        select * from comments where if_show=0
+    </select>
+<!--  倒序查询所有置顶博客  -->
+    <select id="getTopBlogs" resultType="blog.bean.Blog">
+        select blog_id,title,left(body,30) as body,identity1,time1,category,top from blogs where top =1 ORDER BY blog_id DESC
+    </select>
+<!--  查询关于我  -->
+    <select id="getAbout" resultType="blog.bean.About">
+        select about from about where id =1
+    </select>
+<!--  查询网站声明  -->
+    <select id="getStatement" resultType="blog.bean.Statement">
+        select statement from statement where id=1
+    </select>
+<!--  倒序查询留言  -->
+    <select id="getMessage" resultType="blog.bean.Message">
+        select * from message where if_show=1 ORDER BY id DESC limit #{pageNum},5
+    </select>
+<!--  查询未激活留言  -->
+    <select id="getActiveMessage" resultType="blog.bean.Message">
+        select * from message where if_show=0 ORDER BY id DESC limit #{pageNum},5
+    </select>
+<!--  查询博客  -->
+    <select id="searchBlog" resultType="blog.bean.Blog">
+        select * from blogs where title like '%${title}%'
+    </select>
+<!--  查询自动保存的博客  -->
+    <select id="getAutoBlog" parameterType="java.lang.String" resultType="String">
+        select body from auto where id=1
+    </select>
+
+</mapper>
